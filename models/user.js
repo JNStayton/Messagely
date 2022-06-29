@@ -1,6 +1,6 @@
 /** User class for message.ly */
 
-const { BCRYPT_WORK_FACTOR, DB_URI } = require('../config');
+const { BCRYPT_WORK_FACTOR } = require('../config');
 const bcrypt = require('bcrypt');
 const db = require('../db');
 const ExpressError = require('../expressError');
@@ -43,7 +43,7 @@ class User {
 			[ username ]
 		);
 		if (results.rows.length === 0) {
-			throw new ExpressError(`No such user: ${username}`, 404);
+			throw new ExpressError(`No such user: ${username}`, 400);
 		}
 		const user = results.rows[0];
 		return user && (await bcrypt.compare(password, user.password));
@@ -68,8 +68,8 @@ class User {
 	static async all() {
 		const results = await db.query(
 			`SELECT username, first_name, last_name, phone
-      FROM users
-      ORDER BY username`
+      		FROM users
+      		ORDER BY username`
 		);
 		return results.rows;
 	}
